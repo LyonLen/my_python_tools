@@ -10,12 +10,7 @@
 
 import datetime
 
-# 开始的年 月 日（公历）
-START_YEAR = 1900
-START_MONTH = 1
-START_DAY = 31
-
-# 农历年份原始数据
+# 农历年份原始数据, 从公历1900-01-31为农历00-01-01起算
 LUNAR_YEAR_RAW_DATA = (
     0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
     0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,
@@ -43,9 +38,6 @@ MASK_GET_LUNAR_LEAP_MONTH_BIG = 0xf0000
 # 取出除闰月外正常的大小月关系的掩码
 MASK_GET_NORMAL_MONTH_BIG = 0x0fff0
 
-# 小月 0 大月 1
-SML_MONTH, BIG_MONTH = 0, 1
-
 # 年份原始数据解析后存入字典
 LUNAR_YEAR_ANALYSED_DICT = dict()
 
@@ -54,15 +46,14 @@ LUNAR_YEAR_DAY_COUNT_LIST = list()
 
 START_LUNAR_YEAR = 0
 
-
 def _init_lunar_year_analysed_dict():
     now_year = START_LUNAR_YEAR
     for one_year_bits in LUNAR_YEAR_RAW_DATA:
         leap_month = one_year_bits & MASK_GET_LUNAR_MONTH
         normal_month_big = (one_year_bits & MASK_GET_NORMAL_MONTH_BIG) >> 4
-        is_big_leap_month = (one_year_bits & MASK_GET_LUNAR_LEAP_MONTH_BIG if leap_month > 0 else 0) >> 16
         normal_month_big = "0" * (12 - len(bin(normal_month_big).replace("0b", ""))) + bin(normal_month_big).replace(
             "0b", "")
+        is_big_leap_month = (one_year_bits & MASK_GET_LUNAR_LEAP_MONTH_BIG if leap_month > 0 else 0) >> 16
         LUNAR_YEAR_ANALYSED_DICT[now_year] = {
             "NormalMonthBig": normal_month_big,
             "LeapMonth": leap_month,
@@ -70,7 +61,6 @@ def _init_lunar_year_analysed_dict():
         }
         day_count = _count_a_lunar_yaar_days(leap_month, is_big_leap_month, normal_month_big)
         LUNAR_YEAR_DAY_COUNT_LIST.append(day_count)
-
         now_year += 1
 
 
@@ -87,7 +77,8 @@ def _count_a_lunar_yaar_days(leap_month, is_big_leap_month, normal_month_big):
 # 农历的年份解析数据已经准备好
 _init_lunar_year_analysed_dict()
 
-START_DATE_TIME = datetime.datetime.strptime("%04d-%02d-%02d" % (START_YEAR, START_MONTH, START_DAY - 1), '%Y-%m-%d')
+# 开始的年 月 日（公历）
+START_DATE_TIME = datetime.datetime.strptime("%04d-%02d-%02d" % (1900, 1, 30), '%Y-%m-%d')
 
 
 def _count_gap_days_from_start_year(datetime_str):
