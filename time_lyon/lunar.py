@@ -80,7 +80,6 @@ _init_lunar_year_analysed_dict()
 # 开始的年 月 日（公历）
 START_DATE_TIME = datetime.datetime.strptime("%04d-%02d-%02d" % (1900, 1, 30), '%Y-%m-%d')
 
-
 def _count_gap_days_from_start_year(datetime_str):
     '''
     :param   datetime_str: eg "2020-08-30"
@@ -105,10 +104,12 @@ def _get_this_lunner_year_month_list(year_analysed_dict):
 
 def get_lunar_date_str_from_date_str(datetime_str):
     '''
-    :param   datetime_str: eg "2020-08-30"
-    :return: gap_days
+    :param   datetime_str: eg "2020-08-30" should larger than "1900-01-30" and less than 2050-01-21
+    :return: lunar_datetime_str eg like: "0120-04-15 Lunar" or "0120-04-15"
     '''
     gap_days = _count_gap_days_from_start_year(datetime_str)
+    if gap_days <= 0:
+        raise ValueError("%s is not a valid input!" % datetime_str)
     year_analysed_dict, got_lunar_year = None, None
     for idx, year_days in enumerate(LUNAR_YEAR_DAY_COUNT_LIST):
         if gap_days < year_days:
@@ -118,7 +119,7 @@ def get_lunar_date_str_from_date_str(datetime_str):
         else:
             gap_days -= year_days
     if got_lunar_year is None or year_analysed_dict is None:
-        raise Exception("Got no lunar year!")
+        raise Exception("Got no lunar year or year_analysed_dict!")
     lunar_year_month_list = _get_this_lunner_year_month_list(LUNAR_YEAR_ANALYSED_DICT[got_lunar_year])
     now_month = 1
     for idx, day_count in enumerate(lunar_year_month_list):
@@ -127,9 +128,14 @@ def get_lunar_date_str_from_date_str(datetime_str):
         else:
             gap_days -= day_count
         now_month += 1
+    if gap_days <= 0:
+        raise Exception("gap_days <= 0 after calculating!")
     is_leap_month = ""
     if year_analysed_dict["LeapMonth"] and now_month > year_analysed_dict["LeapMonth"]:
         now_month -= 1
         if now_month == year_analysed_dict["LeapMonth"]:
             is_leap_month = "Leap"
     return "%04d-%02d-%02d %s" % (got_lunar_year, now_month, gap_days, is_leap_month)
+
+if __name__ == "__main__":
+    print get_lunar_date_str_from_date_str("1900-01-31")
