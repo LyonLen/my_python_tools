@@ -139,4 +139,4 @@ def get_lunar_date_str_from_date_str(datetime_str):
     return "%04d-%02d-%02d %s" % (got_lunar_year, now_month, gap_days, is_leap_month)
 
 if __name__ == "__main__":
-    print get_lunar_date_str_from_date_str("1900-01-31")
+    print(get_lunar_date_str_from_date_str("1900-01-31"))
