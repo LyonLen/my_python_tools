@@ -47,6 +47,7 @@ LUNAR_YEAR_DAY_COUNT_LIST = list()
 
 START_LUNAR_YEAR = 0
 
+
 def _init_lunar_year_analysed_dict():
     now_year = START_LUNAR_YEAR
     for one_year_bits in LUNAR_YEAR_RAW_DATA:
@@ -80,6 +81,7 @@ _init_lunar_year_analysed_dict()
 
 # 开始的年 月 日（公历）
 START_DATE_TIME = datetime.datetime.strptime("%04d-%02d-%02d" % (1900, 1, 30), '%Y-%m-%d')
+
 
 def _count_gap_days_from_start_year(datetime_str):
     '''
@@ -137,6 +139,7 @@ def get_lunar_date_str_from_date_str(datetime_str):
         if now_month == year_analysed_dict["LeapMonth"]:
             is_leap_month = "Leap"
     return "%04d-%02d-%02d %s" % (got_lunar_year, now_month, gap_days, is_leap_month)
+
 
 if __name__ == "__main__":
     print(get_lunar_date_str_from_date_str("1900-01-31"))
