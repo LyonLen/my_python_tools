@@ -15,7 +15,7 @@ permissions:
 jobs:
   build:
 
-    runs-on: SZRSHPS30026
+    runs-on: Linux
 
     steps:
     - uses: actions/checkout@v3
