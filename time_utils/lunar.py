@@ -6,9 +6,7 @@
 # Filename      : lunar.py
 # Description   : 公历转农历日期转换
 #########################################################
-# !/usr/bin/python
 
-import os
 import datetime
 
 # 农历年份原始数据, 从公历1900-01-31为农历00-01-01起算
