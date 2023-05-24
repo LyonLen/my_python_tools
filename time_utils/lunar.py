@@ -59,12 +59,12 @@ def _init_lunar_year_analysed_dict():
             "LeapMonth": leap_month,
             "IsLeapMonthBig": is_big_leap_month
         }
-        day_count = _count_a_lunar_yaar_days(leap_month, is_big_leap_month, normal_month_big)
+        day_count = _count_a_lunar_year_days(leap_month, is_big_leap_month, normal_month_big)
         LUNAR_YEAR_DAY_COUNT_LIST.append(day_count)
         now_year += 1
 
 
-def _count_a_lunar_yaar_days(leap_month, is_big_leap_month, normal_month_big):
+def _count_a_lunar_year_days(leap_month, is_big_leap_month, normal_month_big):
     if not leap_month:
         day_count = 0
     elif is_big_leap_month:
@@ -82,14 +82,14 @@ START_DATE_TIME = datetime.datetime.strptime("%04d-%02d-%02d" % (1900, 1, 30), '
 
 
 def _count_gap_days_from_start_year(datetime_str):
-    '''
+    """
     :param   datetime_str: eg "2020-08-30"
     :return: gap_days
-    '''
+    """
     return (datetime.datetime.strptime(datetime_str, '%Y-%m-%d') - START_DATE_TIME).days
 
 
-def _get_this_lunner_year_month_list(year_analysed_dict):
+def _get_this_lunar_year_month_list(year_analysed_dict):
     leap_month = year_analysed_dict["LeapMonth"]
     month_list = list()
     for idx, is_big in enumerate(year_analysed_dict["NormalMonthBig"]):
@@ -104,10 +104,10 @@ def _get_this_lunner_year_month_list(year_analysed_dict):
 
 
 def get_lunar_date_str_from_date_str(datetime_str):
-    '''
+    """
     :param   datetime_str: eg "2020-08-30" should larger than "1900-01-30" and less than 2050-01-21
     :return: lunar_datetime_str eg like: "0120-04-15 Lunar" or "0120-04-15"
-    '''
+    """
     gap_days = _count_gap_days_from_start_year(datetime_str)
     if gap_days <= 0:
         raise ValueError("%s is not a valid input!" % datetime_str)
@@ -121,7 +121,7 @@ def get_lunar_date_str_from_date_str(datetime_str):
             gap_days -= year_days
     if got_lunar_year is None or year_analysed_dict is None:
         raise Exception("Got no lunar year or year_analysed_dict!")
-    lunar_year_month_list = _get_this_lunner_year_month_list(LUNAR_YEAR_ANALYSED_DICT[got_lunar_year])
+    lunar_year_month_list = _get_this_lunar_year_month_list(LUNAR_YEAR_ANALYSED_DICT[got_lunar_year])
     now_month = 1
     for idx, day_count in enumerate(lunar_year_month_list):
         if gap_days <= day_count:
